@@ -1,5 +1,5 @@
-import { createBdd } from 'playwright-bdd';
-import { expect, test } from '@playwright/test';
+import { createBdd, test } from 'playwright-bdd';
+import { expect } from '@playwright/test';
 
 const { When, Then } = createBdd(test);
 

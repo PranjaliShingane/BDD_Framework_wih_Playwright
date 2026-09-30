@@ -2,5 +2,7 @@ node_modules/
 dist/
 reports/*.html
 screenshots/*.png
+.features-gen/
+test-results/
 .env
 .DS_Store
