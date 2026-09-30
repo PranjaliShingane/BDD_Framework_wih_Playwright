@@ -5,8 +5,9 @@ import config from './config/config';
 const testDir = defineBddConfig({
   features: 'features/*.feature',
   steps: [
+    'step-definitions/cart.steps.ts',
+    'step-definitions/add-to-cart.steps.ts',
     'src/steps/*.ts',
-    'src/fixtures/bdd-fixtures.ts',
   ],
 });
 

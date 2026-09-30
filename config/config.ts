@@ -1,10 +1,16 @@
 // Centralized framework configuration for environment and runtime settings.
-// This file loads the current environment file selected by TEST_ENV.
+// This file loads the active environment file selected by TEST_ENV / ENV.
 import * as path from 'path';
+import * as fs from 'fs';
 import * as dotenv from 'dotenv';
 
-const envName = (process.env.TEST_ENV || 'qa').toLowerCase();
-const envFilePath = path.resolve(__dirname, `./.env.${envName}`);
+const envName = (process.env.TEST_ENV || process.env.ENV || 'qa').toLowerCase().trim();
+const candidatePaths = [
+  path.resolve(__dirname, `.env.${envName}`),
+  path.resolve(__dirname, '.env.qa'),
+  path.resolve(__dirname, '.env.uat')
+];
+const envFilePath = candidatePaths.find((candidate) => fs.existsSync(candidate)) || candidatePaths[0];
 
 dotenv.config({ path: envFilePath, override: true });
 
