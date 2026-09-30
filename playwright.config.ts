@@ -1,18 +1,31 @@
-// Playwright configuration object used by the browser automation layer.
-// This file keeps browser settings centralized so they are easy to adjust.
-export const playwrightConfig = {
-  browserName: (process.env.BROWSER || 'chromium').toLowerCase(),
-  headless: (process.env.HEADLESS || 'true').toLowerCase() !== 'false',
-  timeout: Number(process.env.TIMEOUT || 30000),
-  baseURL: process.env.BASE_URL || 'https://www.saucedemo.com/',
-  viewport: {
-    width: 1440,
-    height: 900
-  },
-  ignoreHTTPSErrors: true,
-  launchOptions: {
-    args: ['--no-sandbox', '--disable-dev-shm-usage']
-  }
-};
+import { defineConfig, devices } from '@playwright/test';
+import { defineBddConfig } from 'playwright-bdd';
+import config from './config/config';
 
-export default playwrightConfig;
+const testDir = defineBddConfig({
+  features: 'features/*.feature',
+  steps: [
+    'src/steps/*.ts',
+    'src/fixtures/bdd-fixtures.ts',
+  ],
+});
+
+export default defineConfig({
+  testDir,
+  fullyParallel: true,
+  workers: process.env.CI ? 2 : undefined,
+  reporter: [
+    ['list'],
+    ['allure-playwright', { outputFolder: 'allure-results' }]
+  ],
+  use: {
+    baseURL: config.baseUrl,
+    headless: true,
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+    trace: 'on-first-retry',
+  },
+  projects: [
+    { name: 'chrome', use: { ...devices['Desktop Chrome'], channel: 'chrome' } }
+  ],
+});
